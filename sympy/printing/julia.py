@@ -13,6 +13,7 @@ from __future__ import annotations
 from typing import Any
 
 from sympy.core import Mul, Pow, S, Rational
+from sympy.core.function import _coeff_isneg
 from sympy.core.mul import _keep_coeff
 from sympy.core.numbers import equal_valued
 from sympy.printing.codeprinter import CodePrinter
@@ -183,7 +184,7 @@ class JuliaCodePrinter(CodePrinter):
             return sign + multjoin(a, a_str)
         elif len(b) == 1:
             divsym = '/' if b[0].is_number else './'
-            if b[0].is_Pow and b[0].exp.is_negative:
+            if b[0].is_Pow and _coeff_isneg(b[0].exp):
                 b_str[0] = "(%s)" % b_str[0]
             return "%s %s %s" % (sign+multjoin(a, a_str), divsym, b_str[0])
         else:

@@ -6,7 +6,7 @@ from functools import wraps
 from sympy.core import Add, Mul, Pow, S, sympify, Float
 from sympy.core.basic import Basic
 from sympy.core.expr import Expr, UnevaluatedExpr
-from sympy.core.function import Lambda
+from sympy.core.function import Lambda, _coeff_isneg
 from sympy.core.mul import _keep_coeff
 from sympy.core.sorting import default_sort_key
 from sympy.core.symbol import Symbol
@@ -595,7 +595,7 @@ class CodePrinter(StrPrinter):
         elif len(b) == 1:
             # A negative power prints as a quotient, which would otherwise
             # be divided by in turn: x/(1/y), not x/1/y.
-            if b[0].is_Pow and b[0].exp.is_negative:
+            if b[0].is_Pow and _coeff_isneg(b[0].exp):
                 b_str[0] = "(%s)" % b_str[0]
             return sign + '*'.join(a_str) + "/" + b_str[0]
         else:
